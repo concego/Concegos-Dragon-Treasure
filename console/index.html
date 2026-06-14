@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Concego's Dragon Treasure Console</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <div id="console-container" class="state-standby">
+        <!-- Tela de Standby -->
+        <section id="screen-standby" class="screen">
+            <h1 class="title">Concego's Dragon Treasure</h1>
+            <button id="btn-power" aria-label="Ligar Console Concego's Dragon Treasure">POWER</button>
+        </section>
+
+        <!-- Botão Power de desligar (flutuante ou acessível no Hub) -->
+        <button id="btn-power-off" class="hidden" aria-label="Desligar Console">POWER OFF</button>
+
+        <!-- Tela de Boot -->
+        <section id="screen-boot" class="screen hidden" aria-live="polite">
+            <div id="boot-animation">
+                <!-- Aqui entrará a animação do dragão e do baú -->
+                <p id="boot-status" class="sr-only">Inicializando sistema...</p>
+            </div>
+        </section>
+
+        <!-- Hub Principal -->
+        <section id="screen-hub" class="screen hidden">
+            <header>
+                <h2>Dragon Treasure Hub</h2>
+            </header>
+            <main>
+                <div class="menu-grid">
+                    <button id="btn-upload" title="Carregar novo jogo J-SOM">Inserir Jogo</button>
+                    <button id="btn-test-joy" title="Testar posicionamento do controle">Testar Joystick</button>
+                    <button id="btn-memory-card" title="Gerenciar saves"><span class="icon-chest"></span>Memory Card</button>
+                    <button id="btn-export" title="Exportar saves para o celular">Exportar Saves</button>
+                </div>
+                <div id="game-info" class="hidden">
+                    <p>Jogo Carregado: <span id="current-game-name">-</span></p>
+                    <button id="btn-start" class="btn-primary">START</button>
+                </div>
+            </main>
+            <footer style="margin-top: 20px; font-size: 0.8em; opacity: 0.7;">
+                <p>Copyright &copy; 2026 - Eu Concego Jogar</p>
+            </footer>
+        </section>
+
+        <!-- Tela de Gameplay -->
+        <section id="screen-gameplay" class="screen hidden">
+            <div id="game-canvas"></div>
+            <button id="btn-back-hub" class="sr-only">Voltar ao Hub</button>
+        </section>
+    </div>
+
+    <script src="engine.js"></script>
+</body>
+</html>
