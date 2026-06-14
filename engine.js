@@ -7,7 +7,14 @@ class DragonTreasureConsole {
     constructor() {
         this.state = 'STANDBY';
         this.currentGame = null;
-        this.memoryCard = {}; // In a real app, this would use IndexedDB
+        this.memoryCard = {}; 
+        
+        // Configurações de Inclusão (Ativas por padrão)
+        this.settings = {
+            tts: true,
+            haptics: true,
+            audioAssets: true
+        };
         
         // Elementos da UI
         this.screens = {
@@ -19,6 +26,7 @@ class DragonTreasureConsole {
         
         this.btnPowerOff = document.getElementById('btn-power-off');
         this.btnTestJoy = document.getElementById('btn-test-joy');
+        this.btnSettings = document.getElementById('btn-settings');
         
         this.init();
     }
@@ -27,6 +35,7 @@ class DragonTreasureConsole {
         document.getElementById('btn-power').addEventListener('click', () => this.powerOn());
         this.btnPowerOff.addEventListener('click', () => this.powerOff());
         this.btnTestJoy.addEventListener('click', () => this.enterTestMode());
+        this.btnSettings.addEventListener('click', () => this.toggleSettings());
         document.getElementById('btn-upload').addEventListener('click', () => this.uploadGame());
         
         // Novo: Carregar jogos da biblioteca oficial
@@ -91,6 +100,8 @@ class DragonTreasureConsole {
     }
 
     speak(text) {
+        if (!this.settings.tts) return;
+        
         // Interrompe qualquer fala anterior para evitar sobreposição
         window.speechSynthesis.cancel();
         
@@ -182,6 +193,14 @@ class DragonTreasureConsole {
 
         // Bloqueia o menu de contexto (clique longo/Talkback)
         document.addEventListener('contextmenu', (e) => e.preventDefault());
+
+        // Tenta forçar a orientação via API do navegador
+        if (screen.orientation && screen.orientation.lock) {
+            screen.orientation.lock('landscape').catch(e => {
+                console.warn("Orientação travada pelo sistema ou requer interação:", e);
+                this.speak("Aviso: Para melhor experiência, use o celular na horizontal.");
+            });
+        }
     }
 
     async playBootSequence() {
