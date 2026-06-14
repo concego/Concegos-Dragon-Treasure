@@ -77,8 +77,17 @@ class DragonTreasureConsole {
         this.transitionTo('gameplay');
         this.input.activate();
         
+        // Limpa o canvas de gameplay para o modo de teste
+        document.getElementById('game-canvas').innerHTML = `
+            <div style="color: #0f0; text-align: center; padding: 20px; font-family: monospace;">
+                <h2>MODO DE TESTE</h2>
+                <p>O Console assumiu o controle da tela.</p>
+                <div id="test-display" style="font-size: 2em; margin-top: 20px; color: #ff0;">TOQUE PARA MAPEAR</div>
+            </div>
+        `;
+        
         // Aviso sonoro inicial via Web Speech API (usando síntese do navegador)
-        this.speak("Modo de Teste de Joystick ativado. Desative o TalkBack para melhor precisão. Toque na tela para localizar os botões.");
+        this.speak("Atenção: Modo de Teste de Joystick ativado. A partir de agora, a tela está travada para o console. Recomenda-se desativar o TalkBack para testar a sensibilidade tátil. Para sair, reinicie o aplicativo.");
     }
 
     speak(text) {
@@ -432,6 +441,7 @@ class InputManager {
         
         // Narração se estiver no Modo de Teste
         if (this.dt.state === 'TEST_JOYSTICK') {
+            // Garante o idioma português para evitar mistura com inglês
             this.dt.speak(name);
         }
     }
