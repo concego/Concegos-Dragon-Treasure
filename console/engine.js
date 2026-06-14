@@ -29,10 +29,47 @@ class DragonTreasureConsole {
         this.btnTestJoy.addEventListener('click', () => this.enterTestMode());
         document.getElementById('btn-upload').addEventListener('click', () => this.uploadGame());
         
+        // Novo: Carregar jogos da biblioteca oficial
+        this.loadLibrary();
+        
         // Inicializa o Gerenciador de Input
         this.input = new InputManager(this);
         
         console.log("Dragon Treasure System Ready...");
+    }
+
+    async loadLibrary() {
+        console.log("Carregando biblioteca...");
+        const libraryContainer = document.getElementById('library-list');
+        if (!libraryContainer) return;
+
+        // Lista de jogos oficiais (caminhos relativos ao repositório)
+        const games = [
+            { name: "Primeiro Voo", path: "../library/official/primeiro_voo.json" },
+            { name: "Exemplo", path: "games/exemplo.json" }
+        ];
+
+        games.forEach(game => {
+            const btn = document.createElement('button');
+            btn.className = "btn-game-card";
+            btn.innerHTML = `<span>🐉</span> ${game.name}`;
+            btn.onclick = () => this.fetchGame(game.path);
+            btn.setAttribute('aria-label', `Carregar jogo ${game.name}`);
+            libraryContainer.appendChild(btn);
+        });
+    }
+
+    async fetchGame(url) {
+        this.speak("Carregando cartucho da biblioteca...");
+        try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error("Erro ao baixar o J-SOM");
+            const gameData = await response.json();
+            this.loadGame(gameData);
+        } catch (err) {
+            console.error(err);
+            this.speak("Erro ao carregar o jogo da biblioteca.");
+        }
     }
 
     enterTestMode() {
