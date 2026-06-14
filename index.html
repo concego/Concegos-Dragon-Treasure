@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sinfonia das Gemas | Gems Symphony</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#bb86fc">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { background-color: #121212; color: #fff; font-family: sans-serif; margin: 0; display: flex; flex-direction: column; align-items: center; }
+        #app-container { width: 100%; max-width: 500px; padding: 20px; text-align: center; }
+        .hidden { display: none; }
+        table { border-collapse: collapse; margin: 20px auto; background: #1e1e1e; border: 2px solid #333; }
+        td { width: 60px; height: 60px; border: 1px solid #333; cursor: pointer; position: relative; }
+        .cristal { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-weight: bold; border-radius: 4px; }
+        .gema-opaca { opacity: 0.5; }
+        .selecionada { outline: 4px solid #00ffcc; z-index: 10; }
+        .btn-acao { background: #bb86fc; color: #000; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; margin: 5px; }
+        .btn-lang { background: transparent; border: 1px solid #bb86fc; color: #bb86fc; padding: 5px 10px; border-radius: 4px; cursor: pointer; margin: 5px; }
+        .btn-lang.active { background: #bb86fc; color: #000; }
+        #painel-status { margin-bottom: 10px; font-size: 1.2em; }
+    </style>
+</head>
+<body>
+    <div id="app-container">
+        <div id="container-idioma" style="margin-bottom: 20px; display: flex; justify-content: center; gap: 10px;">
+            <button class="btn-lang" id="btn-pt">🇧🇷 PT</button>
+            <button class="btn-lang" id="btn-en">🇺🇸 EN</button>
+        </div>
+        <div id="tela-menu">
+            <h1 id="titulo-jogo">Sinfonia das Gemas</h1>
+            <p id="subtitulo-jogo">Eu Concego Jogar 🐉</p>
+            
+            <div id="credits" style="font-size: 0.9em; margin-bottom: 20px; color: #aaa; line-height: 1.6;">
+                <p>UX Inclusiva & Design de Modos: <strong>Adriele (Adri Lima)</strong></p>
+                <p>Desenvolvimento e Lógica: <strong>Anderson Carvalho</strong></p>
+                <p>Mascote: <strong>Dragão 🐉 (ECJ)</strong></p>
+                <p style="margin-top: 10px;">Dúvidas ou Feedback? <a href="mailto:euconcego@gmail.com" style="color: #bb86fc; text-decoration: none;">euconcego@gmail.com</a></p>
+            </div>
+
+            <div id="modo-selector" style="margin-bottom: 20px;">
+                <select id="select-modo" class="btn-lang" style="width: 200px;">
+                    <option value="PADRAO">Padrão</option>
+                    <option value="MAESTRO">Modo Maestro</option>
+                    <option value="COMPOSITOR">Modo Compositor</option>
+                    <option value="SUDOKU">Sudoku Musical</option>
+                    <option value="ZEN">Modo Zen</option>
+                </select>
+            </div>
+
+            <button id="btn-iniciar" class="btn-acao">COMEÇAR</button>
+            
+            <div style="margin-top: 20px;">
+                <input type="text" id="input-pass" placeholder="Retro Password" class="btn-lang" style="text-transform: uppercase;">
+                <button id="btn-load-pass" class="btn-acao" style="padding: 8px 15px; font-size: 0.9em;">Carregar</button>
+            </div>
+            
+            <p id="current-pass-display" style="margin-top: 10px; font-family: monospace; color: #bb86fc;"></p>
+        </div>
+        <div id="tela-jogo" class="hidden">
+            <div id="announcer" class="sr-only" aria-live="polite"></div>
+            <div id="painel-status">
+                <span id="label-score"></span> | 
+                <span id="label-vidas"></span> |
+                <span id="label-meta"></span>
+            </div>
+            <div id="container-tabuleiro"></div>
+            <button id="btn-voltar" class="btn-acao"></button>
+        </div>
+    </div>
+    <script type="module" src="src/js/app.js"></script>
+</body>
+</html>
