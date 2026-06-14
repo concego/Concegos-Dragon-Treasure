@@ -172,7 +172,7 @@ class DragonTreasureConsole {
 
         // 1. O Dragão acorda (Olho abre)
         status.textContent = "O Dragão desperta...";
-        this.playAsset('sci_fi_beeps.mp3'); // Som de inicialização
+        this.playAsset('chest_opening.mp3'); // Temporário // Som de inicialização
         await this.wait(1000);
         eye.classList.remove('eye-closed');
         eye.classList.add('eye-open');
@@ -418,3 +418,4 @@ class InputManager {
 window.addEventListener('load', () => {
     window.dtConsole = new DragonTreasureConsole();
 });
+
