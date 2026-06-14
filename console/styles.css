@@ -91,9 +91,46 @@ body, html {
 /* Hub */
 .menu-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 20px;
     padding: 20px;
+    margin-bottom: 20px;
+}
+
+#library-section {
+    margin-top: 10px;
+    padding: 20px;
+    background: rgba(20, 20, 20, 0.8);
+    border: 1px solid #d4af37;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 600px;
+}
+
+.games-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.btn-game-card {
+    background: #3e2723;
+    color: #d4af37;
+    border: 2px solid #d4af37;
+    padding: 15px;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+    min-width: 120px;
+}
+
+.btn-game-card:hover, .btn-game-card:focus {
+    background: #5d4037;
+    transform: translateY(-5px);
+    outline: none;
 }
 
 button {
