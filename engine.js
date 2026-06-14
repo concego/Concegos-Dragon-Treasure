@@ -159,7 +159,24 @@ class DragonTreasureConsole {
         }
     }
 
+    // Trava para evitar scroll e comportamentos do sistema (Pull-to-refresh, gestos)
+    lockInterface() {
+        document.body.style.overflow = 'hidden';
+        document.body.style.position = 'fixed';
+        document.body.style.width = '100%';
+        document.body.style.height = '100%';
+        
+        // Bloqueia gestos de sistema e zoom
+        document.addEventListener('touchstart', (e) => {
+            if (e.touches.length > 1) e.preventDefault();
+        }, { passive: false });
+
+        // Bloqueia o menu de contexto (clique longo/Talkback)
+        document.addEventListener('contextmenu', (e) => e.preventDefault());
+    }
+
     async playBootSequence() {
+        this.lockInterface();
         this.state = 'BOOTING';
         this.transitionTo('boot');
         
@@ -314,20 +331,22 @@ class InputManager {
 
     activate() {
         this.active = true;
-        const target = this.dt.screens.gameplay;
         
-        target.addEventListener('touchstart', (e) => this.handleTouch(e), { passive: false });
-        target.addEventListener('touchmove', (e) => this.handleTouch(e), { passive: false });
-        target.addEventListener('touchend', (e) => this.handleTouch(e), { passive: false });
+        // Listener global para garantir que o e.preventDefault() funcione mesmo fora do canvas
+        window.addEventListener('touchstart', (e) => this.handleGlobalTouch(e), { passive: false });
+        window.addEventListener('touchmove', (e) => this.handleGlobalTouch(e), { passive: false });
+        window.addEventListener('touchend', (e) => this.handleGlobalTouch(e), { passive: false });
         
-        console.log("Input Manager Ativado");
+        console.log("Input Manager Ativado com Bloqueio Global");
     }
 
-    handleTouch(e) {
+    handleGlobalTouch(e) {
         if (!this.active) return;
-        e.preventDefault(); // Impede scroll/zoom do navegador
+        
+        // Impede comportamentos nativos como "voltar", "pull-to-refresh" e "zoom"
+        e.preventDefault(); 
 
-        const rect = e.target.getBoundingClientRect();
+        const rect = document.getElementById('console-container').getBoundingClientRect();
         const touches = e.changedTouches;
 
         for (let i = 0; i < touches.length; i++) {
@@ -343,6 +362,10 @@ class InputManager {
                 this.onEnd(t.identifier);
             }
         }
+    }
+
+    handleTouch(e) {
+        // Método mantido para compatibilidade, mas o global agora faz o trabalho pesado
     }
 
     onStart(id, x, y) {
@@ -418,4 +441,5 @@ class InputManager {
 window.addEventListener('load', () => {
     window.dtConsole = new DragonTreasureConsole();
 });
+
 
