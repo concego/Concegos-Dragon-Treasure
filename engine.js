@@ -91,7 +91,20 @@ class DragonTreasureConsole {
         window.speechSynthesis.speak(utterance);
     }
 
-    // Gerador de bipes sintéticos (Web Audio API)
+    // Tocar um arquivo de áudio dos assets
+    playAsset(filename) {
+        return new Promise((resolve) => {
+            const audio = new Audio(`assets/sounds/${filename}`);
+            audio.onended = resolve;
+            audio.onerror = resolve; // Não travar se o som falhar
+            audio.play().catch(e => {
+                console.warn("Audio play blocked or failed:", e);
+                resolve();
+            });
+        });
+    }
+
+    // Gerador de bipes sintéticos (Web Audio API) - Fallback ou efeitos simples
     beep(freq = 440, duration = 0.1, type = 'sine') {
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         const oscillator = audioCtx.createOscillator();
@@ -159,7 +172,7 @@ class DragonTreasureConsole {
 
         // 1. O Dragão acorda (Olho abre)
         status.textContent = "O Dragão desperta...";
-        this.beep(200, 0.5, 'sawtooth'); // Som baixo e rouco
+        this.playAsset('sci_fi_beeps.mp3'); // Som de inicialização
         await this.wait(1000);
         eye.classList.remove('eye-closed');
         eye.classList.add('eye-open');
@@ -169,27 +182,15 @@ class DragonTreasureConsole {
         // 2. O Dragão começa a abrir o Baú (Arpejo Progressivo)
         status.textContent = "Abrindo o Baú do Tesouro...";
         chest.classList.add('open');
-        
-        // Arpejo de "Tesouro"
-        this.beep(261.63, 0.2); // C4
-        await this.wait(200);
-        this.beep(329.63, 0.2); // E4
-        await this.wait(200);
-        this.beep(392.00, 0.2); // G4
-        await this.wait(200);
-        this.beep(523.25, 0.4); // C5
-        
-        await this.wait(1400);
+        this.playAsset('chest_opening.mp3'); 
+        await this.wait(2000);
 
         // 3. O Baú abre totalmente (RUGIDO + Fogo + Vibração)
         status.textContent = "RUGIDO DO DRAGÃO!";
         container.classList.add('shake');
         chest.classList.add('fire-glow');
         
-        // Rugido Sintético (Ruído Branco + Baixo)
-        this.beep(100, 0.8, 'square');
-        this.beep(50, 0.8, 'sawtooth');
-        
+        this.playAsset('dragon_roar.mp3');
         navigator.vibrate([100, 50, 500]); 
         this.speak("Graur!"); // Rugido simulado
         await this.wait(1500);
@@ -197,7 +198,7 @@ class DragonTreasureConsole {
 
         // 4. A Voz da Marca
         status.textContent = "CONCEGO'S DRAGON TREASURE";
-        this.speak("Concego's Dragon Treasure");
+        this.playAsset('concegos_dragon_treasure.mp3');
         await this.wait(2000);
 
         this.state = 'HUB';
