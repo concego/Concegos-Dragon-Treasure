@@ -82,9 +82,32 @@ class DragonTreasureConsole {
     }
 
     speak(text) {
+        // Interrompe qualquer fala anterior para evitar sobreposição
+        window.speechSynthesis.cancel();
+        
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = 'pt-BR';
+        utterance.rate = 1.2; // Um pouco mais rápido para feedback de jogo
         window.speechSynthesis.speak(utterance);
+    }
+
+    // Gerador de bipes sintéticos (Web Audio API)
+    beep(freq = 440, duration = 0.1, type = 'sine') {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+
+        oscillator.type = type;
+        oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        
+        gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + duration);
     }
 
     async powerOn() {
@@ -136,6 +159,7 @@ class DragonTreasureConsole {
 
         // 1. O Dragão acorda (Olho abre)
         status.textContent = "O Dragão desperta...";
+        this.beep(200, 0.5, 'sawtooth'); // Som baixo e rouco
         await this.wait(1000);
         eye.classList.remove('eye-closed');
         eye.classList.add('eye-open');
@@ -145,13 +169,26 @@ class DragonTreasureConsole {
         // 2. O Dragão começa a abrir o Baú (Arpejo Progressivo)
         status.textContent = "Abrindo o Baú do Tesouro...";
         chest.classList.add('open');
-        // Aqui tocaria o arpejo e o som de madeira rangendo
-        await this.wait(2000);
+        
+        // Arpejo de "Tesouro"
+        this.beep(261.63, 0.2); // C4
+        await this.wait(200);
+        this.beep(329.63, 0.2); // E4
+        await this.wait(200);
+        this.beep(392.00, 0.2); // G4
+        await this.wait(200);
+        this.beep(523.25, 0.4); // C5
+        
+        await this.wait(1400);
 
         // 3. O Baú abre totalmente (RUGIDO + Fogo + Vibração)
         status.textContent = "RUGIDO DO DRAGÃO!";
         container.classList.add('shake');
         chest.classList.add('fire-glow');
+        
+        // Rugido Sintético (Ruído Branco + Baixo)
+        this.beep(100, 0.8, 'square');
+        this.beep(50, 0.8, 'sawtooth');
         
         navigator.vibrate([100, 50, 500]); 
         this.speak("Graur!"); // Rugido simulado
