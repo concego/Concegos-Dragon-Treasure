@@ -46,7 +46,7 @@ class DragonTreasureConsole {
         // Lista de jogos oficiais (caminhos relativos ao repositório)
         const games = [
             { name: "Primeiro Voo", path: "library/official/primeiro_voo.json" },
-            { name: "Exemplo", path: "games/exemplo.json" }
+            { name: "Exemplo", path: "library/official/primeiro_voo.json" }
         ];
 
         games.forEach(game => {
