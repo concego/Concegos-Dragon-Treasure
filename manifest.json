@@ -1,0 +1,23 @@
+{
+  "name": "Sinfonia das Gemas",
+  "short_name": "Sinfonia",
+  "description": "Jogo musical pedagógico e acessível",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#121212",
+  "theme_color": "#bb86fc",
+  "icons": [
+    {
+      "src": "https://concego.github.io/sinfonia-das-gemas/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://concego.github.io/sinfonia-das-gemas/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
