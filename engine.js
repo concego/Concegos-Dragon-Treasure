@@ -32,6 +32,13 @@ class DragonTreasureConsole {
     }
 
     init() {
+        // Registro do Service Worker para PWA
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(() => console.log("Service Worker Registrado"))
+                .catch(err => console.error("Erro ao registrar SW:", err));
+        }
+
         document.getElementById('btn-power').addEventListener('click', () => this.powerOn());
         this.btnPowerOff.addEventListener('click', () => this.powerOff());
         this.btnTestJoy.addEventListener('click', () => this.enterTestMode());
