@@ -397,45 +397,49 @@ class InputManager {
     }
 
     onStart(id, x, y) {
-        let buttonName = "";
+        this.touches[id] = { startX: x, startY: y, lastX: x, lastY: y, lastDir: null };
         
+        let label = "";
+        // Lado Esquerdo: D-Pad / Analógico (até 45% da largura)
         if (x < this.zones.movement) {
-            // Zona de Movimento (Joystick Virtual)
-            this.touches[id] = { type: 'move', startX: x, startY: y };
-            buttonName = "Direcional";
+            label = "Direcional (Lado Esquerdo)";
         } else if (x > this.zones.actions) {
-            // Zona de Ações
-            buttonName = this.mapActionButton(x, y);
-            this.touches[id] = { type: 'action', name: buttonName };
+            // Lado Direito: Botões de Ação (a partir de 55%)
+            label = this.mapActionButton(x, y);
         } else {
-            // Zona Central (Coringa)
-            buttonName = "Dragon Eye (Coringa)";
+            label = "Botão Central";
         }
-
-        this.feedback(buttonName);
+        
+        this.feedback(label);
     }
 
     onMove(id, x, y) {
-        const touch = this.touches[id];
-        if (touch && touch.type === 'move') {
-            const dx = x - touch.startX;
-            const dy = y - touch.startY;
+        const t = this.touches[id];
+        if (!t) return;
+
+        // Se for o toque da esquerda (Movimento)
+        if (t.startX < this.zones.movement) {
+            const dx = x - t.startX;
+            const dy = y - t.startY;
+            const dist = Math.sqrt(dx*dx + dy*dy);
             
-            // Lógica de "Hadouken" (Simples: detecta direções rápidas)
-            if (Math.abs(dx) > 0.1 || Math.abs(dy) > 0.1) {
+            if (dist > 0.05) { // Deadzone
                 let dir = "";
                 if (Math.abs(dy) > Math.abs(dx)) {
                     dir = dy > 0 ? "Baixo" : "Cima";
                 } else {
-                    dir = dx > 0 ? "Frente" : "Trás";
+                    dir = dx > 0 ? "Direita (Frente)" : "Esquerda (Trás)";
                 }
                 
-                if (this.dt.state === 'TEST_JOYSTICK') {
-                    // No teste, só vibra sutilmente ao mudar de direção
-                    navigator.vibrate(10);
+                if (dir !== t.lastDir) {
+                    this.feedback(dir);
+                    t.lastDir = dir;
                 }
             }
         }
+        
+        t.lastX = x;
+        t.lastY = y;
     }
 
     onEnd(id) {
@@ -443,15 +447,23 @@ class InputManager {
     }
 
     mapActionButton(x, y) {
-        // Divide o lado direito em 4 quadrantes para A, B, X, Y
-        // E o topo para as Asas (RW1, RW2)
-        if (y < 0.2) return "Asa Direita (RW1)";
+        // Divide o lado direito (x > 0.55)
         
-        if (x > 0.75) {
-            return y < 0.5 ? "Botão Y" : "Botão B";
-        } else {
-            return y < 0.5 ? "Botão X" : "Botão A";
-        }
+        // Gatilho Superior (Asa)
+        if (y < 0.25) return "Gatilho Direito (R1)";
+        
+        // Mapeamento em Cruz no lado direito:
+        // Y (Topo), B (Direita), A (Baixo), X (Esquerda)
+        const relX = (x - this.zones.actions) / (1 - this.zones.actions); // 0.0 a 1.0 no lado direito
+        const relY = y; 
+
+        // Lógica de Cruz (Diamond)
+        if (relX > 0.7) return "Botão B (Direita)";
+        if (relX < 0.3) return "Botão X (Esquerda)";
+        if (relY < 0.5) return "Botão Y (Cima)";
+        if (relY > 0.5) return "Botão A (Baixo)";
+        
+        return "Botão de Ação";
     }
 
     feedback(name) {
